@@ -10,7 +10,7 @@
 
         <div class="card shadow-sm">
             <div class="card-body p-4">
-                <form method="POST" action="{{ url_for('detect') }}" enctype="multipart/form-data" id="detectForm">
+                <form method="POST" action="{{ url_for('predictions.detect') }}" enctype="multipart/form-data" id="detectForm">
                     <div class="mb-4 text-center">
                         <!-- Image Preview Area -->
                         <div id="imagePreview" class="border rounded p-5 mb-3 bg-light"
