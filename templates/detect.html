@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Detect Disease - Plant Disease Detection{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">
+            <i class="fas fa-microscope text-success"></i> Detect Plant Disease
+        </h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('detect') }}" enctype="multipart/form-data" id="detectForm">
+                    <div class="mb-4 text-center">
+                        <!-- Image Preview Area -->
+                        <div id="imagePreview" class="border rounded p-5 mb-3 bg-light"
+                             style="min-height: 250px; display: flex; align-items: center; justify-content: center;">
+                            <div id="previewContent">
+                                <i class="fas fa-cloud-upload-alt fa-4x text-muted mb-3"></i>
+                                <p class="text-muted">Click below or drag and drop a leaf image</p>
+                            </div>
+                            <img id="previewImage" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 300px;">
+                        </div>
+
+                        <input type="file" class="form-control" id="leaf_image" name="leaf_image"
+                               accept=".jpg,.jpeg,.png" required>
+                        <small class="text-muted">Supported formats: JPG, JPEG, PNG (Max 10MB)</small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Tips for best results:</strong>
+                        <ul class="mb-0 mt-1">
+                            <li>Take a clear, well-lit photo of the affected leaf</li>
+                            <li>Ensure the leaf fills most of the image</li>
+                            <li>Avoid blurry or dark images</li>
+                            <li>Currently supports: Pepper Bell and Potato diseases</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100" id="submitBtn">
+                        <i class="fas fa-search"></i> Analyze Leaf
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Image preview
+    document.getElementById('leaf_image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('previewImage').src = event.target.result;
+                document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('previewContent').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Loading state on submit
+    document.getElementById('detectForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Result - {{ prediction.display_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <h2 class="mb-4">
+            <i class="fas fa-clipboard-check text-success"></i> Prediction Result
+        </h2>
+
+        <div class="row">
+            <!-- Image & Prediction Summary -->
+            <div class="col-md-5">
+                <div class="card shadow-sm mb-3">
+                    <img src="{{ url_for('uploaded_file', filename=prediction.image_filename) }}"
+                         class="card-img-top" alt="Uploaded leaf image">
+                    <div class="card-body text-center">
+                        <small class="text-muted">
+                            Uploaded: {{ prediction.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-md-7">
+                <!-- Main Result -->
+                <div class="card shadow-sm mb-3
+                    {% if 'healthy' in prediction.predicted_class.lower() %}border-success{% else %}border-warning{% endif %}">
+                    <div class="card-header
+                        {% if 'healthy' in prediction.predicted_class.lower() %}bg-success{% else %}bg-warning{% endif %} text-white">
+                        <h5 class="mb-0">
+                            {% if 'healthy' in prediction.predicted_class.lower() %}
+                            <i class="fas fa-check-circle"></i> Healthy Plant
+                            {% else %}
+                            <i class="fas fa-exclamation-triangle"></i> Disease Detected
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless mb-0">
+                            <tr>
+                                <th>Crop:</th>
+                                <td>{{ prediction.disease_info.get('crop', 'Unknown') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Disease:</th>
+                                <td>
+                                    <strong>{{ prediction.disease_info.get('disease', prediction.display_name) }}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Model Confidence:</th>
+                                <td>
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar
+                                            {% if prediction.confidence >= 0.8 %}bg-success
+                                            {% elif prediction.confidence >= 0.5 %}bg-warning
+                                            {% else %}bg-danger{% endif %}"
+                                             style="width: {{ (prediction.confidence * 100)|int }}%;">
+                                            {{ "%.1f"|format(prediction.confidence * 100) }}%
+                                        </div>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">
+                                        This is the model's confidence in its prediction, not a certainty of disease presence.
+                                    </small>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Low Confidence Warning -->
+                {% if prediction.confidence < 0.7 %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Low Confidence Prediction:</strong>
+                    The model is not very confident about this prediction.
+                    We recommend consulting a qualified agricultural expert for a reliable diagnosis.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Description -->
+        {% if prediction.disease_info.get('description') %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-info-circle text-info"></i> About This Condition</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ prediction.disease_info.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Symptoms -->
+        {% if prediction.disease_info.get('symptoms') %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-list-ul text-warning"></i> Symptoms</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    {% for symptom in prediction.disease_info.symptoms %}
+                    <li>{{ symptom }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Treatment -->
+        {% if prediction.disease_info.get('treatment') %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-first-aid text-success"></i> Recommended Actions</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    {% for step in prediction.disease_info.treatment %}
+                    <li>{{ step }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="alert alert-secondary mt-3 mb-0">
+                    <i class="fas fa-user-md"></i>
+                    <strong>Disclaimer:</strong> These recommendations are for informational purposes only.
+                    Always consult a qualified agricultural expert before applying any chemical treatments.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- All Predictions (Confidence Distribution) -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-chart-bar text-primary"></i> Confidence Distribution</h5>
+            </div>
+            <div class="card-body">
+                {% for class_name, conf in prediction.all_predictions.items() %}
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between">
+                        <small>{{ class_name|replace('_', ' ') }}</small>
+                        <small>{{ "%.1f"|format(conf * 100) }}%</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar {% if class_name == prediction.predicted_class %}bg-success{% else %}bg-secondary{% endif %}"
+                             style="width: {{ (conf * 100)|int }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('detect') }}" class="btn btn-success me-2">
+                <i class="fas fa-camera"></i> New Prediction
+            </a>
+            <a href="{{ url_for('history') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-history"></i> View History
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

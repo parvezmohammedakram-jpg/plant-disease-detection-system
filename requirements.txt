@@ -1,0 +1,17 @@
+# Core Framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Database
+pymongo==4.5.0
+
+# ML / Image Processing
+tensorflow==2.13.0
+keras==2.13.1
+opencv-python==4.8.1.78
+Pillow==10.0.1
+numpy==1.24.3
+
+# Utilities
+python-dotenv==1.0.0
+bcrypt==4.0.1
