@@ -32,15 +32,12 @@ def detect():
             confidence = prediction_results['confidence']
             all_predictions = prediction_results['all_predictions']
             
-            # Temporary mock for disease info until Phase 4 (Disease/Treatment Engine) is done
-            display_name = predicted_class.replace('___', ' - ').replace('_', ' ')
-            disease_info = {
-                'disease': display_name,
-                'crop': display_name.split(' - ')[0] if ' - ' in display_name else 'Unknown',
-                'description': 'Temporary mock data for Phase 2.',
-                'symptoms': ['Pending Phase 4 implementation.'],
-                'treatment': ['Pending Phase 4 implementation.']
-            }
+            # Fetch comprehensive disease and treatment info
+            from ..disease_knowledge.services import get_disease_info
+            disease_info = get_disease_info(predicted_class)
+            
+            # Use the display name from the DB if available
+            display_name = disease_info['disease_name']
 
             db = get_db()
             predictions_col = db['predictions']

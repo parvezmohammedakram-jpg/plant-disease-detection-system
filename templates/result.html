@@ -110,18 +110,93 @@
         </div>
         {% endif %}
 
-        <!-- Treatment -->
-        {% if prediction.disease_info.get('treatment') %}
+        <!-- Treatments -->
+        {% if prediction.disease_info.get('treatments') %}
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="fas fa-first-aid text-success"></i> Recommended Actions</h5>
+                <h5 class="mb-0"><i class="fas fa-first-aid text-success"></i> Recommended Treatments</h5>
             </div>
             <div class="card-body">
-                <ul>
-                    {% for step in prediction.disease_info.treatment %}
-                    <li>{{ step }}</li>
-                    {% endfor %}
-                </ul>
+                <div class="accordion" id="treatmentAccordion">
+                    
+                    <!-- Preventive -->
+                    {% if prediction.disease_info.treatments.preventive %}
+                    <div class="accordion-item border-success mb-2">
+                        <h2 class="accordion-header" id="headingPreventive">
+                            <button class="accordion-button bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePreventive" aria-expanded="true" aria-controls="collapsePreventive">
+                                <i class="fas fa-shield-alt me-2"></i> Preventive Measures
+                            </button>
+                        </h2>
+                        <div id="collapsePreventive" class="accordion-collapse collapse show" aria-labelledby="headingPreventive">
+                            <div class="accordion-body">
+                                {% for treatment in prediction.disease_info.treatments.preventive %}
+                                <ul>
+                                    {% for step in treatment.instructions %}
+                                    <li>{{ step }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Organic -->
+                    {% if prediction.disease_info.treatments.organic %}
+                    <div class="accordion-item border-info mb-2">
+                        <h2 class="accordion-header" id="headingOrganic">
+                            <button class="accordion-button collapsed bg-info text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganic" aria-expanded="false" aria-controls="collapseOrganic">
+                                <i class="fas fa-leaf me-2"></i> Organic Treatments
+                            </button>
+                        </h2>
+                        <div id="collapseOrganic" class="accordion-collapse collapse" aria-labelledby="headingOrganic">
+                            <div class="accordion-body">
+                                {% for treatment in prediction.disease_info.treatments.organic %}
+                                <ul>
+                                    {% for step in treatment.instructions %}
+                                    <li>{{ step }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Chemical -->
+                    {% if prediction.disease_info.treatments.chemical %}
+                    <div class="accordion-item border-danger mb-2">
+                        <h2 class="accordion-header" id="headingChemical">
+                            <button class="accordion-button collapsed bg-danger text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChemical" aria-expanded="false" aria-controls="collapseChemical">
+                                <i class="fas fa-flask me-2"></i> Chemical Treatments
+                            </button>
+                        </h2>
+                        <div id="collapseChemical" class="accordion-collapse collapse" aria-labelledby="headingChemical">
+                            <div class="accordion-body">
+                                {% for treatment in prediction.disease_info.treatments.chemical %}
+                                <ul>
+                                    {% for step in treatment.instructions %}
+                                    <li>{{ step }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% if treatment.safety_warnings %}
+                                <div class="alert alert-warning mt-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle"></i> <strong>Safety Warnings:</strong>
+                                    <ul class="mb-0 mt-1">
+                                        {% for warning in treatment.safety_warnings %}
+                                        <li>{{ warning }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+                
                 <div class="alert alert-secondary mt-3 mb-0">
                     <i class="fas fa-user-md"></i>
                     <strong>Disclaimer:</strong> These recommendations are for informational purposes only.
