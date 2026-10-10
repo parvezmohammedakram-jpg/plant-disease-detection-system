@@ -5,16 +5,19 @@ Manages MongoDB connection and shared utilities.
 """
 
 from pymongo import MongoClient
+from flask_wtf.csrf import CSRFProtect
 
-# Module-level database references (initialized in init_extensions)
+# Module-level references
 mongo_client = None
 db = None
-
+csrf = CSRFProtect()
 
 def init_extensions(app):
     """Initialize all application extensions."""
     global mongo_client, db
     import os
+    
+    csrf.init_app(app)
 
     # MongoDB
     mongo_client = MongoClient(app.config['MONGODB_URI'])
