@@ -25,6 +25,12 @@ def create_app(config_class=Config):
     # Initialize extensions (DB, CSRF, etc.)
     init_extensions(app)
 
+    # Initialize ML Model Manager
+    from .ml import model_manager
+    import os
+    model_path = os.path.join(app.root_path, '..', 'models', 'model_weights.h5')
+    model_manager.load_model(model_path)
+
     # Register blueprints
     _register_blueprints(app)
 

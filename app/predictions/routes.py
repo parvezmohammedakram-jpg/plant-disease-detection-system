@@ -24,37 +24,22 @@ def detect():
             return render_template('detect.html')
 
         try:
-            # We will refactor to use ModelManager in Phase 2
-            # For now, we will do a simple mock prediction to keep the flow working
-            # as it was in the base app before we move all ML logic to ml/ package
+            # Use ModelManager for inference
+            from ..ml.model_manager import model_manager
             
-            import random
-            CLASS_LABELS = [
-                'Pepper__bell___Bacterial_spot',
-                'Pepper__bell___healthy',
-                'Potato___Early_blight',
-                'Potato___Late_blight',
-                'Potato___healthy',
-            ]
+            prediction_results = model_manager.predict(filepath)
+            predicted_class = prediction_results['predicted_class']
+            confidence = prediction_results['confidence']
+            all_predictions = prediction_results['all_predictions']
             
-            predicted_class = CLASS_LABELS[random.randint(0, len(CLASS_LABELS) - 1)]
-            confidence = round(random.uniform(0.70, 0.99), 4)
-            all_predictions = {c: round(random.uniform(0.01, 0.1), 4) for c in CLASS_LABELS}
-            
-            CLASS_DISPLAY_NAMES = {
-                'Pepper__bell___Bacterial_spot': 'Pepper Bell - Bacterial Spot',
-                'Pepper__bell___healthy': 'Pepper Bell - Healthy',
-                'Potato___Early_blight': 'Potato - Early Blight',
-                'Potato___Late_blight': 'Potato - Late Blight',
-                'Potato___healthy': 'Potato - Healthy',
-            }
-            display_name = CLASS_DISPLAY_NAMES.get(predicted_class, predicted_class)
+            # Temporary mock for disease info until Phase 4 (Disease/Treatment Engine) is done
+            display_name = predicted_class.replace('___', ' - ').replace('_', ' ')
             disease_info = {
                 'disease': display_name,
-                'crop': 'Unknown',
-                'description': 'Temporary mock data.',
-                'symptoms': ['Mock symptom'],
-                'treatment': ['Mock treatment']
+                'crop': display_name.split(' - ')[0] if ' - ' in display_name else 'Unknown',
+                'description': 'Temporary mock data for Phase 2.',
+                'symptoms': ['Pending Phase 4 implementation.'],
+                'treatment': ['Pending Phase 4 implementation.']
             }
 
             db = get_db()
