@@ -43,7 +43,7 @@ Refactor the monolithic `app.py` into a modular architecture.
 
 ---
 
-## Phase 2 — Core ML
+## ✅ Phase 2 — Core ML
 
 ### Tasks
 
@@ -62,7 +62,7 @@ Refactor the monolithic `app.py` into a modular architecture.
 
 ---
 
-## Phase 3 — Disease Knowledge
+## ✅ Phase 3 — Disease Knowledge
 
 ### Tasks
 
@@ -80,7 +80,7 @@ Refactor the monolithic `app.py` into a modular architecture.
 
 ---
 
-## Phase 4 — Farmer History
+## ✅ Phase 4 — Farmer History
 
 ### Tasks
 

@@ -52,6 +52,7 @@ def _register_blueprints(app):
     from .reviews.routes import reviews_bp
     from .admin.routes import admin_bp
     from .plants.routes import plants_bp
+    from .reminders.routes import reminders_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -59,6 +60,7 @@ def _register_blueprints(app):
     app.register_blueprint(reviews_bp, url_prefix='/reviews')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(plants_bp, url_prefix='/plants')
+    app.register_blueprint(reminders_bp, url_prefix='/reminders')
 
 
 def _register_error_handlers(app):
