@@ -51,12 +51,14 @@ def _register_blueprints(app):
     from .main.routes import main_bp
     from .reviews.routes import reviews_bp
     from .admin.routes import admin_bp
+    from .plants.routes import plants_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(predictions_bp, url_prefix='/predictions')
     app.register_blueprint(reviews_bp, url_prefix='/reviews')
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(plants_bp, url_prefix='/plants')
 
 
 def _register_error_handlers(app):

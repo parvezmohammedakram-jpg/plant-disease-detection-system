@@ -94,14 +94,30 @@ def history():
 
     db = get_db()
     predictions_col = db['predictions']
+    
+    # Build query with filters
+    query = {'user_id': user_id}
+    
+    crop_filter = request.args.get('crop')
+    if crop_filter:
+        query['disease_info.crop'] = crop_filter
+        
+    disease_filter = request.args.get('disease')
+    if disease_filter:
+        query['disease_info.disease'] = disease_filter
 
-    total = predictions_col.count_documents({'user_id': user_id})
+    total = predictions_col.count_documents(query)
     predictions = list(
-        predictions_col.find({'user_id': user_id})
+        predictions_col.find(query)
         .sort('created_at', -1)
         .skip((page - 1) * per_page)
         .limit(per_page)
     )
+    
+    # Fetch unique crops and diseases for the filter dropdowns
+    # In a real app, this might be aggregated or cached
+    unique_crops = predictions_col.distinct('disease_info.crop', {'user_id': user_id})
+    unique_diseases = predictions_col.distinct('disease_info.disease', {'user_id': user_id})
     total_pages = (total + per_page - 1) // per_page
 
     return render_template(
@@ -110,6 +126,10 @@ def history():
         page=page,
         total_pages=total_pages,
         total=total,
+        unique_crops=unique_crops,
+        unique_diseases=unique_diseases,
+        current_crop=crop_filter,
+        current_disease=disease_filter
     )
 
 

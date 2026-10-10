@@ -7,6 +7,36 @@
     <small class="text-muted">({{ total }} total)</small>
 </h2>
 
+{% if predictions or current_crop or current_disease %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('predictions.history') }}" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <label for="crop" class="visually-hidden">Filter by Crop</label>
+                <select class="form-select" id="crop" name="crop">
+                    <option value="">All Crops</option>
+                    {% for c in unique_crops %}
+                    <option value="{{ c }}" {% if current_crop == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="disease" class="visually-hidden">Filter by Disease</label>
+                <select class="form-select" id="disease" name="disease">
+                    <option value="">All Diseases</option>
+                    {% for d in unique_diseases %}
+                    <option value="{{ d }}" {% if current_disease == d %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 {% if predictions %}
 <div class="table-responsive">
     <table class="table table-hover shadow-sm">
