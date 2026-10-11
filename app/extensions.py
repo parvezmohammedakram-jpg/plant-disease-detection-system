@@ -31,7 +31,10 @@ def init_extensions(app):
 
     # MongoDB
     uri = app.config['MONGODB_URI']
-    mongo_kwargs = {}
+    mongo_kwargs = {
+        'serverSelectionTimeoutMS': 4000,
+        'connectTimeoutMS': 4000,
+    }
     if 'mongodb+srv' in uri or 'tls=true' in uri.lower() or 'ssl=true' in uri.lower():
         try:
             import certifi

@@ -11,6 +11,11 @@ from .extensions import get_db
 def register_health_routes(app):
     """Register health check endpoints."""
 
+    @app.route('/ping')
+    def ping():
+        """Ultra-fast keepalive endpoint for cron jobs (zero DB/ML overhead)."""
+        return jsonify({'status': 'ok'}), 200
+
     @app.route('/health')
     def health():
         """Overall application health."""
