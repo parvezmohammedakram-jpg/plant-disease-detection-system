@@ -30,7 +30,16 @@ def init_extensions(app):
     babel.init_app(app, locale_selector=get_locale)
 
     # MongoDB
-    mongo_client = MongoClient(app.config['MONGODB_URI'])
+    uri = app.config['MONGODB_URI']
+    mongo_kwargs = {}
+    if 'mongodb+srv' in uri or 'tls=true' in uri.lower() or 'ssl=true' in uri.lower():
+        try:
+            import certifi
+            mongo_kwargs['tlsCAFile'] = certifi.where()
+        except ImportError:
+            pass
+
+    mongo_client = MongoClient(uri, **mongo_kwargs)
     db = mongo_client[app.config['DATABASE_NAME']]
 
     # Create upload directory

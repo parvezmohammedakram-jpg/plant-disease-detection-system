@@ -13,11 +13,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     APP_ENV=production \
     PORT=5000
 
-# Install essential system dependencies for OpenCV and healthcheck
+# Install essential system dependencies for OpenCV, healthcheck, and SSL
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     curl \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy dependencies first for efficient Docker layer caching
