@@ -3,9 +3,11 @@ Flask==2.3.3
 Werkzeug==2.3.7
 
 # Database
-pymongo[srv]==4.5.0
+pymongo[srv,tls]==4.5.0
 certifi>=2023.7.22
 dnspython>=2.4.0
+pyOpenSSL
+service_identity
 
 # ML / Image Processing
 tensorflow

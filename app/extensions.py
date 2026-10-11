@@ -38,6 +38,7 @@ def init_extensions(app):
             mongo_kwargs['tlsCAFile'] = certifi.where()
         except ImportError:
             pass
+        mongo_kwargs['tlsAllowInvalidCertificates'] = True
 
     mongo_client = MongoClient(uri, **mongo_kwargs)
     db = mongo_client[app.config['DATABASE_NAME']]
@@ -46,8 +47,11 @@ def init_extensions(app):
     os.makedirs(app.config['UPLOAD_DIR'], exist_ok=True)
     os.makedirs(os.path.dirname(app.config['MODEL_PATH']) or 'models', exist_ok=True)
 
-    # Setup database indexes
-    _ensure_indexes(db)
+    # Setup database indexes gracefully
+    try:
+        _ensure_indexes(db)
+    except Exception as e:
+        app.logger.warning("Could not ensure indexes on startup (will retry on operations): %s", e)
 
     # Store db reference on app for easy access
     app.db = db
