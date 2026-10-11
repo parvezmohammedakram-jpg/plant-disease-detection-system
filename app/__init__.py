@@ -53,6 +53,9 @@ def _register_blueprints(app):
     from .admin.routes import admin_bp
     from .plants.routes import plants_bp
     from .reminders.routes import reminders_bp
+    from .weather.routes import weather_bp
+    from .risk_engine.routes import risk_bp
+    from .location.routes import bp as location_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -61,6 +64,9 @@ def _register_blueprints(app):
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(plants_bp, url_prefix='/plants')
     app.register_blueprint(reminders_bp, url_prefix='/reminders')
+    app.register_blueprint(weather_bp, url_prefix='/weather')
+    app.register_blueprint(risk_bp, url_prefix='/risk')
+    app.register_blueprint(location_bp, url_prefix='/location')
 
 
 def _register_error_handlers(app):

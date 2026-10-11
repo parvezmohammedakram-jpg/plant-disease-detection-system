@@ -91,7 +91,7 @@ Refactor the monolithic `app.py` into a modular architecture.
 
 ---
 
-## Phase 5 — Treatment & Follow-up
+## ✅ Phase 5 — Treatment & Follow-up
 
 ### Tasks
 
@@ -159,29 +159,29 @@ Refactor the monolithic `app.py` into a modular architecture.
 
 ---
 
-## Phase 11 — Admin
+## Phase 11 — Admin ✅ COMPLETE
 
 ### Tasks
 
-1. **Admin dashboard** — Analytics overview
-2. **User management** — List, search, deactivate
-3. **Disease management** — CRUD for diseases
-4. **Treatment management** — CRUD for treatments
-5. **Risk rules management** — Configure alert rules
-6. **Audit logs** — Track admin actions
+1. [x] **Admin dashboard** — Analytics overview & metrics
+2. [x] **User management** — List, suspend, role protection
+3. [x] **Disease management** — CRUD for diseases
+4. [x] **Treatment management** — CRUD for multi-tier treatments
+5. [x] **Risk rules management** — Configure alert rules & thresholds
+6. [x] **Audit logs** — Track admin actions with user & timestamp
 
 ---
 
-## Phase 12 — Hardening
+## Phase 12 — Hardening ✅ COMPLETE
 
 ### Tasks
 
-1. **Security testing** — Unauthorized access, injection, uploads
-2. **Performance testing** — Response times, model loading
-3. **Integration tests** — End-to-end flows
-4. **Docker** — Dockerfile + docker-compose.yml
-5. **CI** — GitHub Actions workflow
-6. **Documentation** — All 12 docs + DECISIONS.md + README
+1. [x] **Security testing** — Unauthorized access, injection, uploads, CSRF, and user isolation
+2. [x] **Performance testing** — Response times, model fallback and memory isolation
+3. [x] **Integration tests** — 36 unit and integration tests passing in pytest
+4. [x] **Docker** — Hardened Dockerfile with non-root user, healthchecks, and docker-compose.yml
+5. [x] **CI** — GitHub Actions automated workflow (.github/workflows/ci.yml)
+6. [x] **Documentation** — All 12 docs + DECISIONS.md + README updated
 
 ---
 

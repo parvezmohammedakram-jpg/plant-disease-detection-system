@@ -6,11 +6,20 @@ Manages MongoDB connection and shared utilities.
 
 from pymongo import MongoClient
 from flask_wtf.csrf import CSRFProtect
+from flask_babel import Babel
 
 # Module-level references
 mongo_client = None
 db = None
 csrf = CSRFProtect()
+
+def get_locale():
+    from flask import session, request
+    # Use language from session if set, else check Accept-Language header
+    return session.get('lang', request.accept_languages.best_match(['en', 'hi', 'kn'])) or 'en'
+
+babel = Babel()
+
 
 def init_extensions(app):
     """Initialize all application extensions."""
@@ -18,6 +27,7 @@ def init_extensions(app):
     import os
     
     csrf.init_app(app)
+    babel.init_app(app, locale_selector=get_locale)
 
     # MongoDB
     mongo_client = MongoClient(app.config['MONGODB_URI'])
@@ -51,7 +61,7 @@ def _ensure_indexes(database):
     database['predictions'].create_index('predicted_class')
 
     # Reviews: created_at for listing
-    database['reviews'].create_index('created_at', expireAfterSeconds=None)
+    database['reviews'].create_index('created_at')
 
     # Diseases: unique identifier
     database['diseases'].create_index('class_name', unique=True)

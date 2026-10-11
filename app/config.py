@@ -69,6 +69,7 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     DATABASE_NAME = 'plant_disease_test_db'
+    WTF_CSRF_ENABLED = False
 
 
 # Config mapping

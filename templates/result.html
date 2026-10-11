@@ -4,9 +4,14 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-10">
-        <h2 class="mb-4">
-            <i class="fas fa-clipboard-check text-success"></i> Prediction Result
-        </h2>
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="handlePwaBack()">
+                <i class="fas fa-arrow-left me-1"></i> {{ _('Back') }}
+            </button>
+            <h2 class="mb-0 fw-bold">
+                <i class="fas fa-clipboard-check text-success me-2"></i> {{ _('Prediction Result') }}
+            </h2>
+        </div>
 
         <div class="row">
             <!-- Image & Prediction Summary -->
@@ -31,26 +36,26 @@
                         {% if 'healthy' in prediction.predicted_class.lower() %}bg-success{% else %}bg-warning{% endif %} text-white">
                         <h5 class="mb-0">
                             {% if 'healthy' in prediction.predicted_class.lower() %}
-                            <i class="fas fa-check-circle"></i> Healthy Plant
+                            <i class="fas fa-check-circle"></i> {{ _('Healthy Plant') }}
                             {% else %}
-                            <i class="fas fa-exclamation-triangle"></i> Disease Detected
+                            <i class="fas fa-exclamation-triangle"></i> {{ _('Disease Detected') }}
                             {% endif %}
                         </h5>
                     </div>
                     <div class="card-body">
                         <table class="table table-borderless mb-0">
                             <tr>
-                                <th>Crop:</th>
-                                <td>{{ prediction.disease_info.get('crop', 'Unknown') }}</td>
+                                <th>{{ _('Crop:') }}</th>
+                                <td>{{ _(prediction.disease_info.get('crop', 'Unknown')) }}</td>
                             </tr>
                             <tr>
-                                <th>Disease:</th>
+                                <th>{{ _('Disease:') }}</th>
                                 <td>
-                                    <strong>{{ prediction.disease_info.get('disease', prediction.display_name) }}</strong>
+                                    <strong>{{ _(prediction.disease_info.get('disease', prediction.display_name)) }}</strong>
                                 </td>
                             </tr>
                             <tr>
-                                <th>Model Confidence:</th>
+                                <th>{{ _('Model Confidence:') }}</th>
                                 <td>
                                     <div class="progress" style="height: 25px;">
                                         <div class="progress-bar
@@ -62,7 +67,7 @@
                                         </div>
                                     </div>
                                     <small class="text-muted mt-1 d-block">
-                                        This is the model's confidence in its prediction, not a certainty of disease presence.
+                                        {{ _("This is the model's confidence in its prediction, not a certainty of disease presence.") }}
                                     </small>
                                 </td>
                             </tr>
@@ -74,9 +79,9 @@
                 {% if prediction.confidence < 0.7 %}
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Low Confidence Prediction:</strong>
-                    The model is not very confident about this prediction.
-                    We recommend consulting a qualified agricultural expert for a reliable diagnosis.
+                    <strong>{{ _('Low Confidence Prediction:') }}</strong>
+                    {{ _('The model is not very confident about this prediction.') }}
+                    {{ _('We recommend consulting a qualified agricultural expert for a reliable diagnosis.') }}
                 </div>
                 {% endif %}
             </div>
@@ -86,10 +91,10 @@
         {% if prediction.disease_info.get('description') %}
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="fas fa-info-circle text-info"></i> About This Condition</h5>
+                <h5 class="mb-0"><i class="fas fa-info-circle text-info"></i> {{ _('About This Condition') }}</h5>
             </div>
             <div class="card-body">
-                <p>{{ prediction.disease_info.description }}</p>
+                <p>{{ _(prediction.disease_info.description) }}</p>
             </div>
         </div>
         {% endif %}
@@ -98,12 +103,12 @@
         {% if prediction.disease_info.get('symptoms') %}
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="fas fa-list-ul text-warning"></i> Symptoms</h5>
+                <h5 class="mb-0"><i class="fas fa-list-ul text-warning"></i> {{ _('Symptoms') }}</h5>
             </div>
             <div class="card-body">
                 <ul>
                     {% for symptom in prediction.disease_info.symptoms %}
-                    <li>{{ symptom }}</li>
+                    <li>{{ _(symptom) }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -114,7 +119,7 @@
         {% if prediction.disease_info.get('treatments') %}
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="fas fa-first-aid text-success"></i> Recommended Treatments</h5>
+                <h5 class="mb-0"><i class="fas fa-first-aid text-success"></i> {{ _('Recommended Treatments') }}</h5>
             </div>
             <div class="card-body">
                 <div class="accordion" id="treatmentAccordion">
@@ -124,7 +129,7 @@
                     <div class="accordion-item border-success mb-2">
                         <h2 class="accordion-header" id="headingPreventive">
                             <button class="accordion-button bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePreventive" aria-expanded="true" aria-controls="collapsePreventive">
-                                <i class="fas fa-shield-alt me-2"></i> Preventive Measures
+                                <i class="fas fa-shield-alt me-2"></i> {{ _('Preventive Measures') }}
                             </button>
                         </h2>
                         <div id="collapsePreventive" class="accordion-collapse collapse show" aria-labelledby="headingPreventive">
@@ -132,7 +137,7 @@
                                 {% for treatment in prediction.disease_info.treatments.preventive %}
                                 <ul>
                                     {% for step in treatment.instructions %}
-                                    <li>{{ step }}</li>
+                                    <li>{{ _(step) }}</li>
                                     {% endfor %}
                                 </ul>
                                 {% endfor %}
@@ -146,7 +151,7 @@
                     <div class="accordion-item border-info mb-2">
                         <h2 class="accordion-header" id="headingOrganic">
                             <button class="accordion-button collapsed bg-info text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrganic" aria-expanded="false" aria-controls="collapseOrganic">
-                                <i class="fas fa-leaf me-2"></i> Organic Treatments
+                                <i class="fas fa-leaf me-2"></i> {{ _('Organic Treatments') }}
                             </button>
                         </h2>
                         <div id="collapseOrganic" class="accordion-collapse collapse" aria-labelledby="headingOrganic">
@@ -154,7 +159,7 @@
                                 {% for treatment in prediction.disease_info.treatments.organic %}
                                 <ul>
                                     {% for step in treatment.instructions %}
-                                    <li>{{ step }}</li>
+                                    <li>{{ _(step) }}</li>
                                     {% endfor %}
                                 </ul>
                                 {% endfor %}
@@ -168,7 +173,7 @@
                     <div class="accordion-item border-danger mb-2">
                         <h2 class="accordion-header" id="headingChemical">
                             <button class="accordion-button collapsed bg-danger text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChemical" aria-expanded="false" aria-controls="collapseChemical">
-                                <i class="fas fa-flask me-2"></i> Chemical Treatments
+                                <i class="fas fa-flask me-2"></i> {{ _('Chemical Treatments') }}
                             </button>
                         </h2>
                         <div id="collapseChemical" class="accordion-collapse collapse" aria-labelledby="headingChemical">
@@ -176,15 +181,15 @@
                                 {% for treatment in prediction.disease_info.treatments.chemical %}
                                 <ul>
                                     {% for step in treatment.instructions %}
-                                    <li>{{ step }}</li>
+                                    <li>{{ _(step) }}</li>
                                     {% endfor %}
                                 </ul>
                                 {% if treatment.safety_warnings %}
                                 <div class="alert alert-warning mt-2 mb-0">
-                                    <i class="fas fa-exclamation-triangle"></i> <strong>Safety Warnings:</strong>
+                                    <i class="fas fa-exclamation-triangle"></i> <strong>{{ _('Safety Warnings:') }}</strong>
                                     <ul class="mb-0 mt-1">
                                         {% for warning in treatment.safety_warnings %}
-                                        <li>{{ warning }}</li>
+                                        <li>{{ _(warning) }}</li>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -199,8 +204,8 @@
                 
                 <div class="alert alert-secondary mt-3 mb-0">
                     <i class="fas fa-user-md"></i>
-                    <strong>Disclaimer:</strong> These recommendations are for informational purposes only.
-                    Always consult a qualified agricultural expert before applying any chemical treatments.
+                    <strong>{{ _('Disclaimer:') }}</strong> {{ _('These recommendations are for informational purposes only.') }}
+                    {{ _('Always consult a qualified agricultural expert before applying any chemical treatments.') }}
                 </div>
             </div>
         </div>
@@ -209,13 +214,13 @@
         <!-- All Predictions (Confidence Distribution) -->
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="fas fa-chart-bar text-primary"></i> Confidence Distribution</h5>
+                <h5 class="mb-0"><i class="fas fa-chart-bar text-primary"></i> {{ _('Confidence Distribution') }}</h5>
             </div>
             <div class="card-body">
                 {% for class_name, conf in prediction.all_predictions.items() %}
                 <div class="mb-2">
                     <div class="d-flex justify-content-between">
-                        <small>{{ class_name|replace('_', ' ') }}</small>
+                        <small>{{ _(class_name|replace('_', ' ')) }}</small>
                         <small>{{ "%.1f"|format(conf * 100) }}%</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -230,10 +235,10 @@
         <!-- Actions -->
         <div class="text-center mt-4">
             <a href="{{ url_for('predictions.detect') }}" class="btn btn-success me-2">
-                <i class="fas fa-camera"></i> New Prediction
+                <i class="fas fa-camera"></i> {{ _('New Prediction') }}
             </a>
             <a href="{{ url_for('predictions.history') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-history"></i> View History
+                <i class="fas fa-history"></i> {{ _('View History') }}
             </a>
         </div>
     </div>

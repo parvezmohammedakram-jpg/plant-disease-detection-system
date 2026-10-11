@@ -7,7 +7,7 @@ import bcrypt
 
 from . import auth_bp
 from .services import generate_reset_token, verify_reset_token, send_password_reset_email
-from ..extensions import get_db
+from ..extensions import get_db, csrf
 from ..utils.validation import validate_email, validate_password, validate_name
 
 
@@ -37,6 +37,7 @@ def register():
             'email': email,
             'password': hashed,
             'role': 'farmer',
+            'has_seen_onboarding': False,
             'created_at': datetime.now(timezone.utc),
         }
         users_col.insert_one(user)
@@ -61,12 +62,22 @@ def login():
         users_col = db['users']
 
         user = users_col.find_one({'email': email})
-        if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        user_pw = user.get('password') if user else None
+        if isinstance(user_pw, str):
+            user_pw = user_pw.encode('utf-8')
+
+        if user and user_pw and bcrypt.checkpw(password.encode('utf-8'), user_pw):
+            if user.get('suspended', False) or user.get('is_active') is False:
+                current_app.logger.warning("Suspended user attempted login: %s", email)
+                flash('Your account has been suspended. Please contact support.', 'error')
+                return render_template('login.html')
+
             session.permanent = True  # Enable session expiration
             session['user_id'] = str(user['_id'])
             session['user_name'] = user['name']
             session['user_email'] = user['email']
             session['user_role'] = user.get('role', 'farmer')
+            session['first_login'] = not user.get('has_seen_onboarding', False)
             
             current_app.logger.info("User logged in: %s", user['_id'])
             flash(f'Welcome back, {user["name"]}!', 'success')
@@ -133,3 +144,16 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html', token=token)
+
+
+@auth_bp.route('/complete-onboarding', methods=['POST'])
+@csrf.exempt
+def complete_onboarding():
+    user_id = session.get('user_id')
+    if user_id:
+        from bson.objectid import ObjectId
+        db = get_db()
+        db['users'].update_one({'_id': ObjectId(user_id)}, {'$set': {'has_seen_onboarding': True}})
+        session['first_login'] = False
+        return {'status': 'success'}, 200
+    return {'status': 'unauthorized'}, 401

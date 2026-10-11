@@ -80,9 +80,10 @@ LOG_LEVEL=INFO
 ```
 
 ### 5. Seed the Database
-Run the provided script to populate the initial disease knowledge base and treatments:
+Run the provided scripts to populate the initial disease knowledge base, treatments, and nearby agricultural stores/pathologists:
 ```bash
 python scripts/seed_diseases.py
+python scripts/seed_location_data.py
 ```
 
 ### 6. Add the ML Model (Optional)
@@ -97,20 +98,56 @@ python run.py
 ```
 The application will be available at `http://127.0.0.1:5000`.
 
+---
+
+## 🐳 Docker & Docker Compose Setup
+
+Run the entire platform including MongoDB and the hardened Gunicorn WSGI server with a single command:
+
+```bash
+docker compose up --build
+```
+
+The application runs on `http://localhost:5000` with automated healthchecks on `/health` and isolated data volumes for uploads and database files.
+
+---
+
+## 🧪 Running the Automated Test Suite
+
+The test suite contains 36 unit, integration, and security tests covering authentication, image validation, prediction pipelines, admin operations, weather risk evaluation, CSRF, and user isolation:
+
+```bash
+pytest -v
+```
+
+---
+
+## 🌐 Multilingual Localization
+
+The platform natively supports English, Hindi (`hi`), and Kannada (`kn`). Translation catalogs can be compiled anytime using:
+
+```bash
+python -m babel.messages.frontend compile -d app/translations
+```
+
+---
+
 ## 📜 Development Roadmap (Implementation Plan)
 
-- [x] Phase 1: Foundation (App Factory, Blueprints, MongoDB Integration)
-- [x] Phase 2: Core ML (ModelManager singleton, demo mode)
-- [x] Phase 3: Auth Hardening (CSRF, token-based password resets)
-- [x] Phase 4: Farmer History (Plant profiles, filtering)
-- [x] Phase 5: Treatment & Follow-up (Task scheduling, reminders)
-- [ ] Phase 6: Analytics & Dashboard
-- [ ] Phase 7: Geolocation & Weather
-- [ ] Phase 8: Advanced UX (AJAX forms, lazy loading)
-- [ ] Phase 9: Community & Reviews
-- [ ] Phase 10: Offline Mode (PWA)
-- [ ] Phase 11: Admin Portal
-- [ ] Phase 12: Hardening & Deployment (Docker, CI/CD)
+- [x] Phase 1: Foundation (App Factory, Blueprints, MongoDB Integration, Structured Logging)
+- [x] Phase 2: Core ML (ModelManager singleton, inference pipeline, fallback demo mode)
+- [x] Phase 3: Disease Knowledge Base (Structured organic, chemical, and biological recommendations)
+- [x] Phase 4: Farmer History (Plant profiles, filtering, care activities)
+- [x] Phase 5: Treatment & Follow-up (Task scheduling, reminders, tracking)
+- [x] Phase 6: Weather (OpenWeatherMap adapter, caching, humidity & temp metrics)
+- [x] Phase 7: Risk Engine (Weather-driven rule engine for late blight and heat stress)
+- [x] Phase 8: Location Services (Agricultural experts and equipment store discovery)
+- [x] Phase 9: Multilingual (English, Hindi, Kannada with language switcher)
+- [x] Phase 10: Offline Capability (PWA manifest, service worker offline fallback)
+- [x] Phase 11: Admin Portal (Dashboard metrics, user suspension, disease/rules CRUD, audit logs)
+- [x] Phase 12: Hardening & Deployment (Docker, Docker Compose, CI/CD, 36 automated pytest tests)
+
+---
 
 ## 📄 License
 This project is for educational and research purposes.
